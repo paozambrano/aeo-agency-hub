@@ -16,13 +16,13 @@ const DASHBOARD_DATA = {
 
   // ─── SPRINT ────────────────────────────────────────────
   sprint: {
-    week:     "August 11, 2026",
+    week:     "August 3-7, 2026",
     fileDate: "2026-08-11",
-    theme:    "Ship the workshop. Unblock Dr. Michelle. Close Forefront Health. Get OV live before the sale.",
+    theme:    "Manage the Pinder Plotkin renewal risk before it becomes a loss. Land the OV Merchant Center fix. Get Bilal's new review process actually working.",
     top3: [
-      { title: "Workshop FAQ doc + permission-based pitch script", owner: "Julian → ship today", status: "not-started" },
-      { title: "Dr. Michelle / Tyler escalation path — Kasim asked personally", owner: "Julian decides → Eduardo executes", status: "not-started" },
-      { title: "Forefront Health — confirm onboarding path with Kasim EOD", owner: "Julian → Kasim (#sma-aeo-team)", status: "not-started" }
+      { title: "Pinder Plotkin price/renewal conversation with Jason", owner: "Julian", status: "not-started" },
+      { title: "OV robots.txt / Merchant Center crawl fix with tech", owner: "Eduardo, set Mon", status: "in-progress" },
+      { title: "Winona recording with Dr. Katherine Brown (Riverside)", owner: "Juan, due Aug 11", status: "in-progress" }
     ]
   },
 
@@ -30,35 +30,35 @@ const DASHBOARD_DATA = {
   // Each goal is a string. Sub-sections: sales, product, actions, infrastructure, delegation, performance
   goals: {
     weekly: {
-      label: "Week of Aug 11",
+      label: "Week of Aug 3-7",
       business: {
         sales:   [
-          "Forefront Health onboarding path confirmed with Kasim",
-          "Workshop FAQ + pitch script shipped (overdue)"
+          "Manage Pinder Plotkin price/renewal conversation with Jason (Julian)",
+          "Workshop-based acquisition model formalized, ~30 signups feeding cohort-2 pipeline"
         ],
         product: [
-          "OV Tushar blog live before next week's sale",
-          "Per-client query list finalized — unblocks all automation"
+          "Finalize OV HTML blog + coordinate robots.txt/crawl-budget fix with tech (Eduardo)",
+          "Send Jamie Anne's approved content package, confirm reshoot (Johan)"
         ]
       },
       operations: {
         actions: [
-          "Dr. Michelle Tyler escalation resolved (Eduardo owns execution)",
-          "GL Ryan/IT access resolved (Johan)"
+          "Zoya/Julian sign-off review process for Bilal's SEO recs before client delivery",
+          "Send Ahrefs API keys + Screaming Frog licenses to the technical team (Julian)"
         ],
         infrastructure: [
-          "OV variant indexing + Merchant Center fix (Bilal)",
-          "Shopify Partner Access SOP — Bilal sets up for new client"
+          "Build team access-tracking system (Julian)",
+          "Audit tool: VPS test + on-page report/CTA redesign, switched to Qwen (Mehmood)"
         ]
       },
       team: {
         delegation: [
-          "Workshop deck reskin brief → Camilo",
-          "Shorts from Julian's video → Camilo (3–5 per session)"
+          "Bilal: submit recs for Zoya/Julian review, log publicly in client threads",
+          "Camilo/Lucas: continue content production under the front-loaded workflow"
         ],
         performance: [
-          "EOD report from Paola → auto-updates sprint dashboard",
-          "Sammar runs AI visibility report for OV + Dr. Michelle"
+          "Enforce Slack-thread + working-file discipline agency-wide (Pao)",
+          "Compare new vs. previous AI-visibility query results (Sammar)"
         ]
       }
     },
@@ -102,15 +102,15 @@ const DASHBOARD_DATA = {
   // statusColor: "red" | "amber" | "green" | "grey"
   // flag:        "red" | "amber" | "green" | "grey"
   clients: [
-    { name: "Outdoor Vitals",   phase: "Phase 4 — Content", cm: "Eduardo", statusColor: "red",   flag: "red",   note: "Blog HTML Shopify limit. ~9,600 GMC products pending. Sale next week." },
+    { name: "Outdoor Vitals",   phase: "Phase 4 — Content", cm: "Eduardo", statusColor: "red",   flag: "red",   note: "Merchant Center root cause found (robots.txt), fix pending with tech. ~10-day visibility drop traced to an unreviewed Bilal SEO change." },
     { name: "Dr. Michelle",     phase: "Phase 4 — Content", cm: "Eduardo", statusColor: "red",   flag: "red",   note: "Tyler silent. Kasim escalated. Julian decides contact path." },
-    { name: "Groove Life",      phase: "Phase 1 — Onboard", cm: "Johan",   statusColor: "amber", flag: "amber", note: "Access nearly complete. Content batch ready. YouTube → Tue Aug 4." },
-    { name: "Swell Score",      phase: "Phase 4 — Content", cm: "Juan",    statusColor: "amber", flag: "amber", note: "Lucas building presentation. Juan refining scripts." },
-    { name: "Winona",           phase: "Phase 4 — Content", cm: "Juan",    statusColor: "amber", flag: "amber", note: "Reworking guides/scripts from client feedback." },
+    { name: "Groove Life",      phase: "Phase 1 — Onboard", cm: "Johan",   statusColor: "amber", flag: "amber", note: "Editing continues, Instagram carousels next. Backend/Shopify access confirmed never granted, agency works manually off GMB/GA4/GSC." },
+    { name: "Swell Score",      phase: "Phase 4 — Content", cm: "Juan",    statusColor: "amber", flag: "amber", note: "Gary wants more portable-sauna competitor mentions, Juan revising blog. Social-channel priority decision still open." },
+    { name: "Winona",           phase: "Phase 4 — Content", cm: "Juan",    statusColor: "amber", flag: "amber", note: "Dr. Katherine Brown locked in as new presenter, recording set for Aug 11 via Riverside. Reddit strategy runs through her own account." },
     { name: "BabyRx",           phase: "Phase 4 — Content", cm: "Juan",    statusColor: "amber", flag: "amber", note: "Check-in needed. Richpanel FAQ open." },
     { name: "Rootganic",        phase: "Phase 4 — Content", cm: "Eduardo", statusColor: "green", flag: "green", note: "Sarcopenia content + faster standardized flow in progress." },
-    { name: "Jamie Anne",       phase: "Phase 0",           cm: "Johan",   statusColor: "green", flag: "green", note: "Content assets underway (Camilo). No blockers." },
-    { name: "Pinder Plotkin",   phase: "Phase 5.1",         cm: "Julian",  statusColor: "amber", flag: "amber", note: "Zoya pushing content live + schema. Tue call confirmed." },
+    { name: "Jamie Anne",       phase: "Phase 0",           cm: "Johan",   statusColor: "green", flag: "green", note: "Podcast format locked (Jamie solo, FAQ-style). Reshoot needed for lighting, content package targeted for approval this week." },
+    { name: "Pinder Plotkin",   phase: "Phase 5.1",         cm: "Julian",  statusColor: "amber", flag: "amber", note: "Tue call with Jason/Kelly/Oscar landed well, Zoya's URL restructure is the priority fix, staged rollout agreed. Julian flagged a real non-renewal risk on pricing." },
     { name: "Forefront Health", phase: "Inbound",           cm: "Julian",  statusColor: "grey",  flag: "grey",  note: "Medical/compliance vertical. Awaiting confirm from Kasim." },
     { name: "Micromatic",       phase: "Pre-onboarding",    cm: "Juan",    statusColor: "grey",  flag: "grey",  note: "Kasim's message says terms signed ($15k), payment not confirmed. Follow up with Kasim/Pep." }
   ],
