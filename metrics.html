@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEO Agency — Metrics Hub</title>
+<script src="metrics-data.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --orange:       #F97316;
+  --orange-light: #FFF7ED;
+  --orange-mid:   #FFEDD5;
+  --navy:         #0F1D3A;
+  --navy-mid:     #1E3A5F;
+  --teal:         #0D9488;
+  --teal-light:   #CCFBF1;
+
+  --bg:           #F1F5F9;
+  --surface:      #FFFFFF;
+  --surface-2:    #F8FAFC;
+  --border:       #E2E8F0;
+  --border-strong:#CBD5E1;
+
+  --text-1:       #0F172A;
+  --text-2:       #334155;
+  --text-3:       #64748B;
+  --text-4:       #94A3B8;
+
+  --green:        #16A34A;
+  --green-light:  #F0FDF4;
+  --green-border: #BBF7D0;
+  --amber:        #D97706;
+  --amber-light:  #FFFBEB;
+  --amber-border: #FDE68A;
+  --red:          #DC2626;
+  --red-light:    #FEF2F2;
+  --red-border:   #FECACA;
+  --blue:         #1D4ED8;
+  --blue-light:   #EFF6FF;
+  --blue-border:  #BFDBFE;
+  --purple:       #7C3AED;
+  --purple-light: #F5F3FF;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --radius: 14px;
+  --gap: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ─── HEADER ─────────────────────────────────────────────── */
+.header {
+  background: var(--navy);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.header-left  { display: flex; align-items: center; gap: 18px; }
+.header-logo  { display: flex; align-items: center; gap: 12px; }
+.header-logo-dot {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1rem; color: #fff;
+}
+.header-wordmark { color: #fff; font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+.header-divider  { width: 1px; height: 24px; background: rgba(255,255,255,0.15); }
+.header-nav { display: flex; align-items: center; gap: 4px; }
+.nav-link {
+  padding: 6px 14px; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  transition: background 0.15s, color 0.15s;
+}
+.nav-link:hover       { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-link.active      { background: rgba(249,115,22,0.2); color: #FB923C; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-meta  { color: rgba(255,255,255,0.45); font-size: 0.78rem; }
+.placeholder-badge {
+  background: rgba(249,115,22,0.18); color: #FB923C;
+  border: 1px solid rgba(249,115,22,0.35);
+  border-radius: 6px; padding: 3px 10px;
+  font-size: 0.72rem; font-weight: 700;
+}
+
+/* ─── PILLAR TABS ─────────────────────────────────────────── */
+.pillar-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex; gap: 0;
+  position: sticky; top: 64px; z-index: 90;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.pillar-tab {
+  padding: 14px 22px;
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--text-3);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.pillar-tab:hover { color: var(--text-1); }
+.pillar-tab.active.business    { color: var(--blue);   border-color: var(--blue); }
+.pillar-tab.active.operations  { color: var(--orange);  border-color: var(--orange); }
+.pillar-tab.active.team        { color: var(--green);   border-color: var(--green); }
+.pillar-icon { font-size: 1rem; }
+
+/* ─── MAIN ────────────────────────────────────────────────── */
+.metrics-wrap { max-width: 1400px; margin: 0 auto; padding: 28px 28px 56px; }
+.pillar-panel { display: none; flex-direction: column; gap: 28px; }
+.pillar-panel.active { display: flex; }
+
+/* ─── PERIOD TOGGLE ──────────────────────────────────────── */
+.period-toggle {
+  display: flex; gap: 6px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 4px;
+}
+.period-btn {
+  padding: 5px 14px; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 600; color: var(--text-3);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.period-btn.active { background: var(--surface); color: var(--text-1); box-shadow: var(--shadow-sm); }
+
+/* ─── SECTION HEADER ─────────────────────────────────────── */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-head-left { display: flex; align-items: center; gap: 10px; }
+.section-head-line { width: 3px; height: 20px; border-radius: 2px; flex-shrink: 0; }
+.section-head-line.blue   { background: var(--blue); }
+.section-head-line.orange { background: var(--orange); }
+.section-head-line.green  { background: var(--green); }
+.section-head-line.purple { background: var(--purple); }
+.section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+/* ─── KPI CARDS ──────────────────────────────────────────── */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 12px; }
+.kpi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.kpi-label { font-size: 0.72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.kpi-value { font-size: 1.6rem; font-weight: 900; color: var(--text-1); line-height: 1.1; }
+.kpi-value.placeholder { color: var(--text-4); }
+.kpi-note  { font-size: 0.72rem; color: var(--text-4); margin-top: 6px; line-height: 1.4; }
+.kpi-delta { font-size: 0.75rem; font-weight: 700; margin-top: 4px; }
+.kpi-delta.up   { color: var(--green); }
+.kpi-delta.down { color: var(--red); }
+
+/* ─── TABLES ──────────────────────────────────────────────── */
+.table-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--surface-2); text-align: left;
+  padding: 10px 14px; font-size: 0.72rem; font-weight: 700;
+  color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 11px 14px; font-size: 0.82rem; color: var(--text-2);
+  border-bottom: 1px solid var(--border); vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface-2); }
+.td-bold   { font-weight: 700; color: var(--text-1); }
+.td-muted  { color: var(--text-4); font-style: italic; }
+.td-note   { font-size: 0.75rem; color: var(--text-3); }
+.td-mono   { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; }
+
+/* Status pills */
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.pill-green  { background: var(--green-light);  color: var(--green);  border: 1px solid var(--green-border); }
+.pill-amber  { background: var(--amber-light);  color: var(--amber);  border: 1px solid var(--amber-border); }
+.pill-red    { background: var(--red-light);    color: var(--red);    border: 1px solid var(--red-border); }
+.pill-blue   { background: var(--blue-light);   color: var(--blue);   border: 1px solid var(--blue-border); }
+.pill-grey   { background: var(--surface-2);    color: var(--text-3); border: 1px solid var(--border); }
+
+/* Probability bar */
+.prob-wrap { display: flex; align-items: center; gap: 8px; }
+.prob-bar  { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 3px; background: var(--blue); }
+.prob-label{ font-size: 0.72rem; font-weight: 600; color: var(--text-3); white-space: nowrap; }
+
+/* ─── RUN RATE SUMMARY ───────────────────────────────────── */
+.runrate-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+@media (max-width: 800px) { .runrate-grid { grid-template-columns: repeat(2,1fr); } }
+.runrate-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.runrate-label { font-size: 0.7rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.runrate-value { font-size: 1.5rem; font-weight: 900; color: var(--text-1); }
+.runrate-value.placeholder { color: var(--text-4); font-size: 1.2rem; }
+.runrate-sub   { font-size: 0.72rem; color: var(--text-4); margin-top: 4px; }
+.runrate-card.net-positive .runrate-value { color: var(--green); }
+.runrate-card.net-negative .runrate-value { color: var(--red); }
+
+/* ─── BANDWIDTH SIGNALS ──────────────────────────────────── */
+.capacity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+.capacity-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.cap-top   { display: flex; align-items: center; justify-content: space-between; }
+.cap-name  { font-size: 0.88rem; font-weight: 700; color: var(--text-1); }
+.cap-role  { font-size: 0.72rem; color: var(--text-4); margin-bottom: 2px; }
+.cap-note  { font-size: 0.78rem; color: var(--text-3); line-height: 1.4; }
+.bw-full       { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+.bw-available  { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+.bw-overloaded { background: var(--red-light);   color: var(--red);   border: 1px solid var(--red-border); }
+.bw-blocked    { background: var(--surface-2);   color: var(--text-3); border: 1px solid var(--border); }
+
+/* ─── OUTPUT METRICS ─────────────────────────────────────── */
+.output-period { display: none; }
+.output-period.active { display: block; }
+.output-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.output-row:last-child { border-bottom: none; }
+.output-label { font-size: 0.85rem; color: var(--text-2); }
+.output-note  { font-size: 0.75rem; color: var(--text-4); margin-top: 2px; }
+.output-value { font-size: 1rem; font-weight: 800; color: var(--text-4); min-width: 48px; text-align: right; }
+
+/* ─── PLACEHOLDER NOTICE ─────────────────────────────────── */
+.placeholder-notice {
+  background: var(--orange-light); border: 1px solid #FED7AA;
+  border-radius: 10px; padding: 14px 18px;
+  font-size: 0.82rem; color: #92400E;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.placeholder-notice-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+.footer {
+  display: flex; justify-content: space-between;
+  font-size: 0.72rem; color: var(--text-4);
+  padding-top: 12px; border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">
+      <div class="header-logo-dot">A</div>
+      <div class="header-wordmark">AEO Agency</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-nav">
+      <a href="index.html"   class="nav-link">Dashboard</a>
+      <a href="metrics.html" class="nav-link active">Metrics Hub</a>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-meta" id="hdr-meta"></div>
+    <div class="placeholder-badge">⚙ Placeholder Data</div>
+  </div>
+</div>
+
+<!-- PILLAR TABS -->
+<div class="pillar-bar">
+  <div class="pillar-tab active business"   onclick="switchPillar('business')"  >
+    <span class="pillar-icon">📈</span> Business
+  </div>
+  <div class="pillar-tab operations"        onclick="switchPillar('operations')">
+    <span class="pillar-icon">⚙️</span> Operations
+  </div>
+  <div class="pillar-tab team"              onclick="switchPillar('team')"      >
+    <span class="pillar-icon">👥</span> Team
+  </div>
+</div>
+
+<div class="metrics-wrap">
+
+  <!-- ═══════════════════════════════════════════════════════
+       BUSINESS PANEL
+  ════════════════════════════════════════════════════════ -->
+  <div class="pillar-panel active" id="panel-business">
+
+    <!-- Placeholder notice -->
+    <div class="placeholder-notice">
+      <div class="placeholder-notice-icon">⚠️</div>
+      <div>
+        <strong>Placeholder version.</strong> All "$—" and "—" values need to be filled in. Edit <code>metrics-data.js</code> to update. This tab is the upgrade framework — build the real numbers into it over time.
+      </div>
+    </div>
+
+    <!-- Revenue KPIs -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line blue"></div>
+          <div class="section-label">Revenue KPIs</div>
+        </div>
+        <div class="period-toggle">
+          <div class="period-btn active" onclick="switchKPI('weekly',this)">Weekly</div>
+          <div class="period-btn"        onclick="switchKPI('monthly',this)">Monthly</div>
+        </div>
+      </div>
+      <div class="kpi-row" id="kpi-row"></div>
+    </div>
+
+    <!-- Sales Pipeline -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line blue"></div>
+          <div class="section-label">Sales Pipeline</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table id="pipeline-table">
+          <thead>
+            <tr>
+              <th>Opportunity</th>
+              <th>Stage</th>
+              <th>Value</th>
+              <th>Source</th>
+              <th>Next Action</th>
+              <th>Close</th>
+              <th>Probability</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="pipeline-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>AEO Agency · Business Metrics</div>
+      <div id="biz-footer"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       OPERATIONS PANEL
+  ════════════════════════════════════════════════════════ -->
+  <div class="pillar-panel" id="panel-operations">
+
+    <div class="placeholder-notice">
+      <div class="placeholder-notice-icon">⚠️</div>
+      <div>
+        <strong>Placeholder version.</strong> Fill in actual fee + expense numbers in <code>metrics-data.js</code>. Run rate calculates automatically once amounts are entered.
+      </div>
+    </div>
+
+    <!-- Run Rate summary -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line orange"></div>
+          <div class="section-label">Run Rate Summary</div>
+        </div>
+      </div>
+      <div class="runrate-grid" id="runrate-grid"></div>
+    </div>
+
+    <!-- Income per client -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line orange"></div>
+          <div class="section-label">Income — Active Clients</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Plan</th>
+              <th>Monthly Fee</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="income-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Expenses -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line orange"></div>
+          <div class="section-label">Monthly Expenses</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Amount / mo</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="expense-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Opportunities -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line purple"></div>
+          <div class="section-label">Revenue Opportunities in Pipeline</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Revenue</th>
+              <th>Target</th>
+              <th>Status</th>
+              <th>Owner</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="opp-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>AEO Agency · Operations Metrics</div>
+      <div id="ops-footer"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TEAM PANEL
+  ════════════════════════════════════════════════════════ -->
+  <div class="pillar-panel" id="panel-team">
+
+    <div class="placeholder-notice">
+      <div class="placeholder-notice-icon">⚠️</div>
+      <div>
+        <strong>Placeholder version.</strong> Bandwidth signals and output metrics need weekly updates in <code>metrics-data.js</code>. Paola's EOD report is the primary source of truth.
+      </div>
+    </div>
+
+    <!-- Bandwidth -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line green"></div>
+          <div class="section-label">Team Capacity — Week of <span id="team-week"></span></div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-4);">
+          🟢 Available &nbsp; 🟠 Full &nbsp; 🔴 Overloaded
+        </div>
+      </div>
+      <div class="capacity-grid" id="capacity-grid"></div>
+    </div>
+
+    <!-- Output metrics -->
+    <div>
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-head-line green"></div>
+          <div class="section-label">Output Metrics</div>
+        </div>
+        <div class="period-toggle">
+          <div class="period-btn active" onclick="switchOutput('weekly',this)">Weekly</div>
+          <div class="period-btn"        onclick="switchOutput('monthly',this)">Monthly</div>
+        </div>
+      </div>
+      <div class="table-card" style="padding:4px 20px;">
+        <div class="output-period active" id="output-weekly"></div>
+        <div class="output-period"        id="output-monthly"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>AEO Agency · Team Metrics</div>
+      <div id="team-footer"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── PILLAR NAV ────────────────────────────────────────────
+function switchPillar(name) {
+  document.querySelectorAll('.pillar-tab').forEach(t =>
+    t.classList.toggle('active', t.classList.contains(name)));
+  document.querySelectorAll('.pillar-panel').forEach(p =>
+    p.classList.toggle('active', p.id === 'panel-' + name));
+}
+
+// ─── KPI PERIOD ────────────────────────────────────────────
+let kpiPeriod = 'weekly';
+function switchKPI(period, btn) {
+  kpiPeriod = period;
+  btn.closest('.period-toggle').querySelectorAll('.period-btn').forEach(b =>
+    b.classList.toggle('active', b === btn));
+  renderKPIs();
+}
+
+// ─── OUTPUT PERIOD ─────────────────────────────────────────
+function switchOutput(period, btn) {
+  btn.closest('.period-toggle').querySelectorAll('.period-btn').forEach(b =>
+    b.classList.toggle('active', b === btn));
+  document.getElementById('output-weekly').classList.toggle('active',  period === 'weekly');
+  document.getElementById('output-monthly').classList.toggle('active', period === 'monthly');
+}
+
+// ─── HELPERS ───────────────────────────────────────────────
+function fmt(val) {
+  if (val === null || val === undefined) return '<span class="td-muted">—</span>';
+  if (typeof val === 'number') return '$' + val.toLocaleString();
+  return val;
+}
+function pillClass(status) {
+  const map = {
+    'active': 'pill-green', 'at-risk': 'pill-red', 'paused': 'pill-amber',
+    'pending': 'pill-blue', 'current': 'pill-green',
+    'Active': 'pill-green', 'Pre-launch': 'pill-blue',
+    'Qualification': 'pill-blue', 'Lead Gen': 'pill-grey'
+  };
+  return map[status] || 'pill-grey';
+}
+function bwClass(bw) {
+  return { full:'bw-full', available:'bw-available', overloaded:'bw-overloaded', blocked:'bw-blocked' }[bw] || 'bw-grey';
+}
+function bwLabel(bw) {
+  return { full:'Full', available:'Available', overloaded:'Overloaded', blocked:'Blocked' }[bw] || bw;
+}
+
+// ─── RENDER FUNCTIONS ──────────────────────────────────────
+function renderKPIs() {
+  const d   = METRICS_DATA.business.kpis[kpiPeriod];
+  const el  = document.getElementById('kpi-row');
+  el.innerHTML = d.map(k => `
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value${k.value === '$—' || k.value === '—' ? ' placeholder' : ''}">${k.value}</div>
+      ${k.note ? `<div class="kpi-note">${k.note}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderPipeline() {
+  const el = document.getElementById('pipeline-body');
+  el.innerHTML = METRICS_DATA.business.pipeline.map(p => `
+    <tr>
+      <td class="td-bold">${p.name}</td>
+      <td><span class="pill ${pillClass(p.stage)}">${p.stage}</span></td>
+      <td class="td-mono">${p.value}</td>
+      <td class="td-note">${p.source}</td>
+      <td>${p.nextAction}</td>
+      <td class="td-note">${p.closeDate}</td>
+      <td>
+        <div class="prob-wrap">
+          <div class="prob-bar"><div class="prob-fill" style="width:${p.probability}%"></div></div>
+          <div class="prob-label">${p.probability}%</div>
+        </div>
+      </td>
+      <td class="td-note">${p.notes}</td>
+    </tr>
+  `).join('');
+}
+
+function renderRunRate() {
+  const rr   = METRICS_DATA.operations.runRate;
+  const income = METRICS_DATA.operations.income;
+
+  // Auto-compute gross MRR from income rows
+  const computed = income.filter(c => c.status === 'active').reduce((s,c) => s + (c.fee || 0), 0);
+  const gross = rr.grossMRR || (computed > 0 ? computed : null);
+
+  const cards = [
+    { label: "Gross MRR",     value: gross,          sub: "Sum of active client fees",   cls: "" },
+    { label: "Total Expenses",value: rr.totalExpenses, sub: "All monthly costs",          cls: "" },
+    { label: "Net MRR",       value: rr.netMRR,      sub: "Gross − Expenses",            cls: rr.netMRR > 0 ? 'net-positive' : rr.netMRR < 0 ? 'net-negative' : '' },
+    { label: "Runway",        value: rr.runway,      sub: "Months at current burn",       cls: "" }
+  ];
+
+  document.getElementById('runrate-grid').innerHTML = cards.map(c => `
+    <div class="runrate-card ${c.cls}">
+      <div class="runrate-label">${c.label}</div>
+      <div class="runrate-value${c.value === null ? ' placeholder' : ''}">
+        ${c.value === null ? '— fill in data' : (typeof c.value === 'number' ? '$' + c.value.toLocaleString() : c.value)}
+      </div>
+      <div class="runrate-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+function renderIncome() {
+  const el = document.getElementById('income-body');
+  const rows = METRICS_DATA.operations.income;
+  let total = 0;
+  el.innerHTML = rows.map(r => {
+    if (r.status === 'active' && r.fee) total += r.fee;
+    return `
+      <tr>
+        <td class="td-bold">${r.client}</td>
+        <td class="td-note">${r.plan}</td>
+        <td class="td-mono">${r.fee ? '$' + r.fee.toLocaleString() + '/mo' : '<span class="td-muted">—</span>'}</td>
+        <td><span class="pill ${pillClass(r.status)}">${r.status}</span></td>
+        <td><span class="pill ${pillClass(r.paymentStatus)}">${r.paymentStatus}</span></td>
+        <td class="td-note">${r.notes}</td>
+      </tr>
+    `;
+  }).join('') + `
+    <tr style="background:var(--surface-2);">
+      <td colspan="2" style="font-weight:700;font-size:0.82rem;color:var(--text-3);">TOTAL ACTIVE MRR</td>
+      <td class="td-mono td-bold">${total ? '$' + total.toLocaleString() + '/mo' : '<span class="td-muted">—</span>'}</td>
+      <td colspan="3"></td>
+    </tr>
+  `;
+}
+
+function renderExpenses() {
+  const el = document.getElementById('expense-body');
+  const rows = METRICS_DATA.operations.expenses;
+  let total = 0;
+  el.innerHTML = rows.map(r => {
+    if (r.amount) total += r.amount;
+    return `
+      <tr>
+        <td class="td-bold">${r.category}</td>
+        <td class="td-mono">${r.amount ? '$' + r.amount.toLocaleString() + '/mo' : '<span class="td-muted">— add amount</span>'}</td>
+        <td class="td-note">${r.note}</td>
+      </tr>
+    `;
+  }).join('') + `
+    <tr style="background:var(--surface-2);">
+      <td style="font-weight:700;font-size:0.82rem;color:var(--text-3);">TOTAL EXPENSES</td>
+      <td class="td-mono td-bold">${total ? '$' + total.toLocaleString() + '/mo' : '<span class="td-muted">—</span>'}</td>
+      <td></td>
+    </tr>
+  `;
+}
+
+function renderOpportunities() {
+  const el = document.getElementById('opp-body');
+  el.innerHTML = METRICS_DATA.operations.opportunities.map(o => `
+    <tr>
+      <td class="td-bold">${o.name}</td>
+      <td><span class="pill ${pillClass(o.type)}">${o.type}</span></td>
+      <td class="td-mono">${o.revenue}</td>
+      <td class="td-note">${o.target}</td>
+      <td><span class="pill ${pillClass(o.status)}">${o.status}</span></td>
+      <td class="td-note">${o.owner}</td>
+      <td class="td-note">${o.notes}</td>
+    </tr>
+  `).join('');
+}
+
+function renderCapacity() {
+  const el = document.getElementById('capacity-grid');
+  el.innerHTML = METRICS_DATA.team.capacity.map(m => `
+    <div class="capacity-card">
+      <div class="cap-top">
+        <div class="cap-name">${m.name}</div>
+        <div class="pill ${bwClass(m.bandwidth)}">${bwLabel(m.bandwidth)}</div>
+      </div>
+      <div class="cap-role">${m.role} · ${Array.isArray(m.clients) ? m.clients.join(', ') : m.clients}</div>
+      <div class="cap-note">${m.note}</div>
+    </div>
+  `).join('');
+}
+
+function renderOutput() {
+  ['weekly','monthly'].forEach(period => {
+    const items = METRICS_DATA.team.output[period];
+    const el = document.getElementById('output-' + period);
+    el.innerHTML = items.map(item => `
+      <div class="output-row">
+        <div>
+          <div class="output-label">${item.label}</div>
+          <div class="output-note">${item.note}</div>
+        </div>
+        <div class="output-value">${item.value}</div>
+      </div>
+    `).join('');
+  });
+}
+
+// ─── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const d   = METRICS_DATA;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) +
+    ' · ' + now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('hdr-meta').textContent = dateStr;
+  document.getElementById('team-week').textContent = d.meta.week;
+
+  const footerDate = 'Updated ' + now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' · metrics-data.js';
+  ['biz-footer','ops-footer','team-footer'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = footerDate;
+  });
+
+  renderKPIs();
+  renderPipeline();
+  renderRunRate();
+  renderIncome();
+  renderExpenses();
+  renderOpportunities();
+  renderCapacity();
+  renderOutput();
+});
+</script>
+</body>
+</html>

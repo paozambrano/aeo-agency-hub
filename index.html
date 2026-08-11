@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEO Agency — Health Dashboard</title>
+<script src="dashboard-data.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --orange:       #F97316;
+  --orange-light: #FFF7ED;
+  --orange-mid:   #FFEDD5;
+  --orange-dark:  #C2410C;
+  --navy:         #0F1D3A;
+  --navy-mid:     #1E3A5F;
+  --teal:         #0D9488;
+  --teal-light:   #CCFBF1;
+
+  --bg:           #F1F5F9;
+  --surface:      #FFFFFF;
+  --surface-2:    #F8FAFC;
+  --border:       #E2E8F0;
+  --border-strong:#CBD5E1;
+
+  --text-1:       #0F172A;
+  --text-2:       #334155;
+  --text-3:       #64748B;
+  --text-4:       #94A3B8;
+
+  --green:        #16A34A;
+  --green-light:  #F0FDF4;
+  --green-border: #BBF7D0;
+  --amber:        #D97706;
+  --amber-light:  #FFFBEB;
+  --amber-border: #FDE68A;
+  --red:          #DC2626;
+  --red-light:    #FEF2F2;
+  --red-border:   #FECACA;
+  --grey-light:   #F8FAFC;
+  --grey-border:  #E2E8F0;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+
+  --radius: 14px;
+  --gap:    20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ─── HEADER ─────────────────────────────────────────────── */
+.header {
+  background: var(--navy);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.header-left  { display: flex; align-items: center; gap: 18px; }
+.header-logo  { display: flex; align-items: center; gap: 12px; }
+.header-logo-dot {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1rem; color: #fff;
+}
+.header-wordmark { color: #fff; font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+.header-divider  { width: 1px; height: 24px; background: rgba(255,255,255,0.15); }
+.header-badge    { color: rgba(255,255,255,0.55); font-size: 0.82rem; font-weight: 500; }
+.header-right    { display: flex; align-items: center; gap: 16px; }
+.header-sprint-tag { color: rgba(255,255,255,0.7); font-size: 0.82rem; }
+.header-sprint-tag strong { color: #fff; }
+.header-time     { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+.stale-tag       { background: rgba(249,115,22,0.2); color: #FB923C; border: 1px solid rgba(249,115,22,0.3); border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+
+/* ─── MAIN LAYOUT ────────────────────────────────────────── */
+.dash { max-width: 1400px; margin: 0 auto; padding: 28px 28px 48px; display: flex; flex-direction: column; gap: 28px; }
+
+/* ─── SECTION HEADER ─────────────────────────────────────── */
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.section-head-line   { width: 3px; height: 20px; background: var(--orange); border-radius: 2px; flex-shrink: 0; }
+.section-head-label  { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+.section-head-count  { font-size: 0.72rem; font-weight: 500; color: var(--text-4); margin-left: auto; }
+
+/* ─── TODAY'S 3 ─────────────────────────────────────────── */
+.today3-card {
+  background: var(--navy);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-md);
+}
+.today3-eyebrow { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
+.today3-list { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+@media (max-width: 900px) { .today3-list { grid-template-columns: 1fr; } }
+.today3-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.today3-num   { font-size: 1.5rem; font-weight: 900; color: var(--orange); line-height: 1; }
+.today3-title { font-size: 0.9rem; font-weight: 600; color: #fff; line-height: 1.4; }
+.today3-owner { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.spill {
+  display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 6px;
+  font-size: 0.72rem; font-weight: 700; cursor: pointer; width: fit-content;
+  transition: opacity 0.15s;
+}
+.spill:hover { opacity: 0.8; }
+.spill.not-started { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+.spill.in-progress { background: rgba(249,115,22,0.25); color: #FB923C; }
+.spill.done        { background: rgba(22,163,74,0.25);  color: #4ADE80; }
+
+/* ─── SPRINT ────────────────────────────────────────────── */
+.sprint-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  display: flex; align-items: center; gap: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.sprint-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-4); white-space: nowrap; }
+.sprint-week  { font-size: 0.85rem; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.sprint-sep   { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+.sprint-theme { font-size: 0.88rem; color: var(--text-2); line-height: 1.5; }
+
+/* ─── GOALS — 3-PILLAR ──────────────────────────────────── */
+.goals-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.goals-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.goals-tab {
+  padding: 10px 20px;
+  font-size: 0.8rem; font-weight: 600; color: var(--text-3);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.goals-tab.active { color: var(--navy); border-color: var(--orange); }
+.goals-period { display: none; padding: 22px 24px; }
+.goals-period.active { display: block; }
+.goals-period-label { font-size: 0.75rem; font-weight: 600; color: var(--text-4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; }
+
+/* 3-pillar grid */
+.goals-pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+.goals-pillar  { padding: 0 20px; border-right: 1px solid var(--border); }
+.goals-pillar:first-child { padding-left: 0; }
+.goals-pillar:last-child  { border-right: none; padding-right: 0; }
+
+.pillar-label {
+  font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 6px 10px; border-radius: 6px; margin-bottom: 14px; display: inline-block;
+}
+.pillar-label.business    { background: #EFF6FF; color: #1D4ED8; }
+.pillar-label.operations  { background: #FFF7ED; color: #C2410C; }
+.pillar-label.team        { background: #F0FDF4; color: #15803D; }
+
+/* sub-section within pillar */
+.goal-subsection { margin-bottom: 16px; }
+.goal-subsection:last-child { margin-bottom: 0; }
+.goal-sub-label {
+  font-size: 0.7rem; font-weight: 700; color: var(--text-4); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.goal-sub-label::before { content: ''; display: block; width: 2px; height: 12px; background: var(--border-strong); border-radius: 1px; }
+.goal-item {
+  font-size: 0.82rem; color: var(--text-2); line-height: 1.45;
+  padding: 6px 0 6px 12px;
+  border-left: 2px solid var(--border);
+  margin-bottom: 6px;
+}
+.goal-item:last-child { margin-bottom: 0; }
+
+/* ─── CLIENT PIPELINE ───────────────────────────────────── */
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 12px;
+}
+.client-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+.client-card.red    { border-left: 3px solid var(--red);   }
+.client-card.amber  { border-left: 3px solid var(--amber); }
+.client-card.green  { border-left: 3px solid var(--green); }
+.client-card.grey   { border-left: 3px solid var(--border-strong); }
+.client-flag { position: absolute; top: 12px; right: 14px; font-size: 0.9rem; }
+.client-name  { font-size: 0.9rem; font-weight: 700; color: var(--text-1); margin-bottom: 4px; padding-right: 24px; }
+.client-phase { font-size: 0.75rem; font-weight: 600; color: var(--teal); margin-bottom: 2px; }
+.client-cm    { font-size: 0.73rem; color: var(--text-4); margin-bottom: 8px; }
+.client-note  { font-size: 0.76rem; color: var(--text-3); line-height: 1.4; border-top: 1px solid var(--border); padding-top: 8px; }
+
+/* ─── TEAM CARDS ────────────────────────────────────────── */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px; }
+.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.team-card-head { padding: 14px 18px; }
+.team-card-head.cm  { background: #EFF6FF; border-bottom: 1px solid #BFDBFE; }
+.team-card-head.ce  { background: #FFF7ED; border-bottom: 1px solid #FED7AA; }
+.team-card-head.ws  { background: #F0FDF4; border-bottom: 1px solid #BBF7D0; }
+.team-card-head.dr  { background: #FAF5FF; border-bottom: 1px solid #E9D5FF; }
+.team-card-head.ops { background: #FFF1F2; border-bottom: 1px solid #FECDD3; }
+.team-name    { font-size: 0.82rem; font-weight: 700; color: var(--text-1); }
+.team-members { font-size: 0.74rem; color: var(--text-3); margin-top: 2px; }
+.team-card-body { padding: 14px 18px; }
+.team-goal { font-size: 0.8rem; color: var(--text-2); line-height: 1.45; padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+.team-goal:last-child { border-bottom: none; padding-bottom: 0; }
+.team-goal-arrow { color: var(--orange); font-weight: 700; flex-shrink: 0; }
+
+/* ─── QUICK ACCESS ──────────────────────────────────────── */
+.quickaccess-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.qa-section-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-4); margin-bottom: 12px; margin-top: 20px;
+}
+.qa-section-label:first-child { margin-top: 0; }
+.qa-grid-tools  { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.qa-grid-social { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
+@media (max-width: 900px) {
+  .qa-grid-tools  { grid-template-columns: repeat(2,1fr); }
+  .qa-grid-social { grid-template-columns: repeat(3,1fr); }
+}
+.qa-link {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.qa-link:hover { background: var(--orange-light); border-color: var(--orange); }
+.qa-link[href="#"] { opacity: 0.45; cursor: default; pointer-events: none; }
+.qa-link-icon  { font-size: 1.2rem; flex-shrink: 0; }
+.qa-link-text  { display: flex; flex-direction: column; min-width: 0; }
+.qa-link-label { font-size: 0.78rem; font-weight: 600; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qa-link-sub   { font-size: 0.68rem; color: var(--text-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ─── FOOTER ────────────────────────────────────────────── */
+.footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--text-4);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .goals-pillars { grid-template-columns: 1fr; }
+  .goals-pillar  { border-right: none; padding: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px; }
+  .goals-pillar:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">
+      <div class="header-logo-dot">A</div>
+      <div class="header-wordmark">AEO Agency</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-badge">Agency Health Dashboard</div>
+  </div>
+  <div class="header-right">
+    <div class="header-nav" style="display:flex;align-items:center;gap:4px;margin-right:12px;">
+      <a href="index.html"   style="padding:5px 13px;border-radius:8px;font-size:0.8rem;font-weight:600;background:rgba(249,115,22,0.18);color:#FB923C;">Dashboard</a>
+      <a href="metrics.html" style="padding:5px 13px;border-radius:8px;font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.55);transition:background 0.15s,color 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.55)'">Metrics Hub</a>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-sprint-tag">Sprint: <strong id="hdr-sprint"></strong></div>
+    <div class="header-divider"></div>
+    <div class="header-time" id="hdr-time"></div>
+    <div id="stale-tag"></div>
+  </div>
+</div>
+
+<div class="dash">
+
+  <!-- 1. TODAY'S 3 — FULL WIDTH -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">⚡ Today's Priorities</div>
+    </div>
+    <div class="today3-card">
+      <div class="today3-eyebrow">Top 3 — Click status to cycle</div>
+      <div class="today3-list" id="today3-list"></div>
+    </div>
+  </div>
+
+  <!-- 2. SPRINT — FULL WIDTH -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">Current Sprint</div>
+    </div>
+    <div class="sprint-card">
+      <div class="sprint-label">Week of</div>
+      <div class="sprint-week" id="sprint-week-val"></div>
+      <div class="sprint-sep"></div>
+      <div class="sprint-theme" id="sprint-theme-val"></div>
+    </div>
+  </div>
+
+  <!-- 3. GOALS — 3-PILLAR -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">Agency Goals</div>
+    </div>
+    <div class="goals-card">
+      <div class="goals-tabs">
+        <div class="goals-tab active" data-period="weekly"  onclick="switchGoals('weekly')">Weekly</div>
+        <div class="goals-tab"        data-period="monthly" onclick="switchGoals('monthly')">Monthly</div>
+      </div>
+
+      <!-- WEEKLY -->
+      <div class="goals-period active" id="goals-weekly">
+        <div class="goals-period-label" id="weekly-label"></div>
+        <div class="goals-pillars">
+          <div class="goals-pillar">
+            <div class="pillar-label business">Business</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Sales</div>
+              <div id="wg-business-sales"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Product</div>
+              <div id="wg-business-product"></div>
+            </div>
+          </div>
+          <div class="goals-pillar">
+            <div class="pillar-label operations">Operations</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Actions</div>
+              <div id="wg-operations-actions"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Infrastructure</div>
+              <div id="wg-operations-infrastructure"></div>
+            </div>
+          </div>
+          <div class="goals-pillar">
+            <div class="pillar-label team">Team</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Delegation</div>
+              <div id="wg-team-delegation"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Performance</div>
+              <div id="wg-team-performance"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MONTHLY -->
+      <div class="goals-period" id="goals-monthly">
+        <div class="goals-period-label" id="monthly-label"></div>
+        <div class="goals-pillars">
+          <div class="goals-pillar">
+            <div class="pillar-label business">Business</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Sales</div>
+              <div id="mg-business-sales"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Product</div>
+              <div id="mg-business-product"></div>
+            </div>
+          </div>
+          <div class="goals-pillar">
+            <div class="pillar-label operations">Operations</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Actions</div>
+              <div id="mg-operations-actions"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Infrastructure</div>
+              <div id="mg-operations-infrastructure"></div>
+            </div>
+          </div>
+          <div class="goals-pillar">
+            <div class="pillar-label team">Team</div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Delegation</div>
+              <div id="mg-team-delegation"></div>
+            </div>
+            <div class="goal-subsection">
+              <div class="goal-sub-label">Performance</div>
+              <div id="mg-team-performance"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CLIENT PIPELINE -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">Client Pipeline</div>
+      <div class="section-head-count" id="client-count"></div>
+    </div>
+    <div class="client-grid" id="client-grid"></div>
+  </div>
+
+  <!-- 5. TEAM -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">Team</div>
+    </div>
+    <div class="team-grid" id="team-grid"></div>
+  </div>
+
+  <!-- 6. QUICK ACCESS -->
+  <div>
+    <div class="section-head">
+      <div class="section-head-line"></div>
+      <div class="section-head-label">Quick Access</div>
+    </div>
+    <div class="quickaccess-card">
+      <div class="qa-section-label">Tools &amp; Admin</div>
+      <div class="qa-grid-tools" id="qa-tools"></div>
+      <div class="qa-section-label">Social Channels</div>
+      <div class="qa-grid-social" id="qa-social"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>AEO Agency · Internal Use Only</div>
+    <div id="footer-right"></div>
+  </div>
+
+</div>
+
+<script>
+function switchGoals(period) {
+  document.querySelectorAll('.goals-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.period === period));
+  document.querySelectorAll('.goals-period').forEach(p =>
+    p.classList.toggle('active', p.id === 'goals-' + period));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const d   = DASHBOARD_DATA;
+  const now = new Date();
+
+  // ── Header ──
+  document.getElementById('hdr-sprint').textContent = d.sprint.week;
+  document.getElementById('hdr-time').textContent =
+    now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) + ' · ' +
+    now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+
+  const daysSince = Math.floor((now - new Date(d.sprint.fileDate)) / 86400000);
+  if (daysSince > 10) {
+    document.getElementById('stale-tag').innerHTML =
+      `<div class="stale-tag">⚠ Sprint data ${daysSince}d old</div>`;
+  }
+
+  // ── Sprint ──
+  document.getElementById('sprint-week-val').textContent  = d.sprint.week;
+  document.getElementById('sprint-theme-val').textContent = d.sprint.theme;
+
+  // ── Today's 3 ──
+  const statuses = ['not-started','in-progress','done'];
+  const labels   = {'not-started':'Not Started','in-progress':'In Progress','done':'Done ✓'};
+  const top3el   = document.getElementById('today3-list');
+  d.sprint.top3.forEach((item, i) => {
+    let idx = statuses.indexOf(item.status || 'not-started');
+    const el = document.createElement('div');
+    el.className = 'today3-item';
+    el.innerHTML =
+      `<div class="today3-num">${i+1}</div>` +
+      `<div class="today3-body">` +
+        `<div class="today3-title">${item.title}</div>` +
+        `<div class="today3-owner">${item.owner}</div>` +
+      `</div>` +
+      `<div class="spill ${statuses[idx]}">${labels[statuses[idx]]}</div>`;
+    el.querySelector('.spill').addEventListener('click', function() {
+      idx = (idx + 1) % 3;
+      this.className = `spill ${statuses[idx]}`;
+      this.textContent = labels[statuses[idx]];
+    });
+    top3el.appendChild(el);
+  });
+
+  // ── Goals — 6-pillar ──
+  document.getElementById('weekly-label').textContent  = d.goals.weekly.label;
+  document.getElementById('monthly-label').textContent = d.goals.monthly.label;
+
+  function fillGoals(prefix, period) {
+    const g = d.goals[period];
+    [
+      ['business','sales'],
+      ['business','product'],
+      ['operations','actions'],
+      ['operations','infrastructure'],
+      ['team','delegation'],
+      ['team','performance']
+    ].forEach(([pillar, sub]) => {
+      const id = `${prefix}-${pillar}-${sub}`;
+      const el = document.getElementById(id);
+      if (el && g[pillar] && g[pillar][sub]) {
+        el.innerHTML = g[pillar][sub].map(item =>
+          `<div class="goal-item">${item}</div>`
+        ).join('');
+      }
+    });
+  }
+  fillGoals('wg','weekly');
+  fillGoals('mg','monthly');
+
+  // ── Clients ──
+  const flagMap = { red:'🔴', amber:'🟡', green:'🟢', grey:'' };
+  document.getElementById('client-count').textContent = d.clients.length + ' accounts';
+  const clientGrid = document.getElementById('client-grid');
+  d.clients.forEach(c => {
+    clientGrid.innerHTML +=
+      `<div class="client-card ${c.statusColor}">` +
+        `<div class="client-flag">${flagMap[c.flag]||''}</div>` +
+        `<div class="client-name">${c.name}</div>` +
+        `<div class="client-phase">${c.phase}</div>` +
+        `<div class="client-cm">${c.cm}</div>` +
+        (c.note ? `<div class="client-note">${c.note}</div>` : '') +
+      `</div>`;
+  });
+
+  // ── Teams ──
+  const teamGrid = document.getElementById('team-grid');
+  d.teams.forEach(t => {
+    teamGrid.innerHTML +=
+      `<div class="team-card">` +
+        `<div class="team-card-head ${t.cls}">` +
+          `<div class="team-name">${t.name}</div>` +
+          `<div class="team-members">${t.members}</div>` +
+        `</div>` +
+        `<div class="team-card-body">` +
+          t.goals.map(g =>
+            `<div class="team-goal"><span class="team-goal-arrow">→</span>${g}</div>`
+          ).join('') +
+        `</div>` +
+      `</div>`;
+  });
+
+  // ── Quick Access ──
+  function buildLinks(items, containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    items.forEach(link => {
+      el.innerHTML +=
+        `<a href="${link.url}" class="qa-link" target="${link.url==='#'?'_self':'_blank'}">` +
+          `<div class="qa-link-icon">${link.icon}</div>` +
+          `<div class="qa-link-text">` +
+            `<span class="qa-link-label">${link.label}</span>` +
+            `<span class="qa-link-sub">${link.sub}</span>` +
+          `</div>` +
+        `</a>`;
+    });
+  }
+  buildLinks(d.quickLinks.tools,  'qa-tools');
+  buildLinks(d.quickLinks.social, 'qa-social');
+
+  // ── Footer ──
+  document.getElementById('footer-right').textContent =
+    `Updated ${now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} · dashboard-data.js`;
+});
+</script>
+</body>
+</html>
